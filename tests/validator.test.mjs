@@ -21,11 +21,11 @@ test('validateAndBuildPreviewRows flags missing titles and deadlines', () => {
   assert.equal(preview.length, 4);
   assert.equal(preview[0].validation.isValid, true);
   assert.equal(preview[1].validation.isValid, false);
-  assert.ok(preview[1].validation.errors.some((e) => e.includes('title is required')));
+  assert.ok(preview[1].validation.errors.some((e) => e.includes('ชื่องาน') || e.includes('title')));
   assert.equal(preview[2].validation.isValid, false);
-  assert.ok(preview[2].validation.errors.some((e) => e.includes('Deadline is required')));
+  assert.ok(preview[2].validation.errors.some((e) => e.includes('กำหนดส่ง') || e.includes('Deadline')));
   assert.equal(preview[3].validation.isValid, false);
-  assert.ok(preview[3].validation.errors.some((e) => e.includes('Empty row')));
+  assert.ok(preview[3].validation.errors.some((e) => e.includes('แถวว่าง') || e.includes('Empty row')));
 });
 
 test('validateAndBuildPreviewRows flags duplicate tasks against database and batch', () => {
@@ -58,10 +58,10 @@ test('validateAndBuildPreviewRows flags duplicate tasks against database and bat
   const preview = validateAndBuildPreviewRows(rawRows, mappings, existingTasks);
 
   assert.equal(preview[0].validation.isDuplicate, true);
-  assert.ok(preview[0].validation.warnings.some((w) => w.includes('existing task')));
+  assert.ok(preview[0].validation.warnings.some((w) => w.includes('มีงานนี้อยู่แล้ว') || w.includes('existing task')));
 
   assert.equal(preview[1].validation.isDuplicate, false);
 
   assert.equal(preview[2].validation.isDuplicate, true);
-  assert.ok(preview[2].validation.warnings.some((w) => w.includes('Duplicate of another row')));
+  assert.ok(preview[2].validation.warnings.some((w) => w.includes('ซ้ำกับ') || w.includes('Duplicate of another row')));
 });
