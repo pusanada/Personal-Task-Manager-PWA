@@ -2,56 +2,25 @@
 
 import { useState, useEffect } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light';
 
+/**
+ * TaskFlow ใช้ธีมขาวเท่านั้น (ตามแนวทางการออกแบบ)
+ * hook นี้ถูกเก็บไว้เพื่อความเข้ากันได้ และบังคับให้แสดงผลโหมดสว่างเสมอ
+ */
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>('system');
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
+  const [theme] = useState<Theme>('light');
+  const [resolvedTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
-    const saved = localStorage.getItem('taskflow_theme') as Theme | null;
-    const initial = saved || 'system';
-    setThemeState(initial);
-
-    applyTheme(initial);
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      const current = localStorage.getItem('taskflow_theme') as Theme | null;
-      if (!current || current === 'system') {
-        applyTheme('system');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    // ล้างการตั้งค่าธีมเดิม และบังคับโหมดสว่าง
+    localStorage.removeItem('taskflow_theme');
+    document.documentElement.classList.remove('dark');
   }, []);
 
-  const applyTheme = (t: Theme) => {
-    const root = document.documentElement;
-    let isDark = false;
-
-    if (t === 'system') {
-      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } else {
-      isDark = t === 'dark';
-    }
-
-    if (isDark) {
-      root.classList.add('dark');
-      setResolvedTheme('dark');
-    } else {
-      root.classList.remove('dark');
-      setResolvedTheme('light');
-    }
-  };
-
-  const setTheme = (newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem('taskflow_theme', newTheme);
-    applyTheme(newTheme);
+  const setTheme = (_: Theme) => {
+    // ธีมเดียว: สว่าง (ไม่มีตัวเลือกอื่น)
   };
 
   return { theme, resolvedTheme, setTheme };

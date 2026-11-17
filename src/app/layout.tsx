@@ -1,20 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const notoSansThai = Noto_Sans_Thai({
+  variable: "--font-sans",
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "TaskFlow — Personal Task Manager PWA",
-  description: "Smart task manager with Excel import, deadline tracking, and offline support for university students",
+  title: "TaskFlow — ผู้ช่วยจัดการงานส่วนตัว",
+  description:
+    "แอปจัดการงานส่วนตัว พร้อมนำเข้าไฟล์ Excel แจ้งเตือนกำหนดส่ง และใช้งานได้แม้ไม่มีอินเทอร์เน็ต",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -28,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4f46e5",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -42,11 +39,11 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="th"
+      className={`${notoSansThai.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-white text-foreground">
         {children}
       </body>
     </html>

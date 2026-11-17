@@ -9,8 +9,6 @@ import { UpcomingDeadlinesSection } from '@/components/dashboard/UpcomingDeadlin
 import { DeleteConfirmModal } from '@/components/tasks/DeleteConfirmModal';
 import { useTasks } from '@/hooks/useTasks';
 import { Task, TaskStatus } from '@/types/task';
-import { FileSpreadsheet } from 'lucide-react';
-import Link from 'next/link';
 
 function DashboardContent() {
   const { openAddTask, openEditTask } = useTaskModal();
@@ -45,42 +43,24 @@ function DashboardContent() {
 
   return (
     <div className="space-y-6">
-      {/* Greeting & Header */}
+      {/* ส่วนหัว + วันที่ปัจจุบัน */}
       <GreetingHeader
         completedCount={stats.completed}
         totalCount={stats.total}
+        overdueCount={stats.overdue}
         onOpenAddTask={openAddTask}
       />
 
-      {/* Statistics Cards */}
+      {/* แถบสรุปสถิติกระชับ */}
       <TaskStatsOverview stats={stats} />
-
-      {/* Quick action bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-indigo-500/10 border border-indigo-200/50 dark:border-indigo-900/50">
-        <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-            Got a new course syllabus or assignment sheet?
-          </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Upload your Excel file to automatically extract deadlines and organize your semester.
-          </p>
-        </div>
-        <Link
-          href="/import"
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-bold hover:shadow-xs transition-all"
-        >
-          <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-          <span>Import Excel</span>
-        </Link>
-      </div>
 
       {/* Loading Skeleton */}
       {loading && tasks.length === 0 ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-6 w-48 bg-slate-200 dark:bg-slate-800 rounded" />
+          <div className="h-6 w-48 bg-neutral-200 rounded" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="h-28 bg-slate-200 dark:bg-slate-800 rounded-xl" />
-            <div className="h-28 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+            <div className="h-28 bg-neutral-100 rounded-lg" />
+            <div className="h-28 bg-neutral-100 rounded-lg" />
           </div>
         </div>
       ) : (

@@ -14,17 +14,17 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variantStyles = {
-    default: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
-    high: 'bg-rose-100 text-rose-800 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-900',
-    medium: 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-900',
-    low: 'bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-900',
-    pending: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    in_progress: 'bg-sky-100 text-sky-800 border border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-900',
-    completed: 'bg-teal-100 text-teal-800 border border-teal-200 dark:bg-teal-950/60 dark:text-teal-300 dark:border-teal-900',
-    overdue: 'bg-red-500 text-white font-semibold shadow-sm animate-pulse',
-    urgent: 'bg-amber-500 text-white font-semibold shadow-sm',
-    warning: 'bg-indigo-100 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-900',
-    outline: 'border border-slate-300 text-slate-700 dark:border-slate-700 dark:text-slate-300',
+    default: 'bg-neutral-100 text-neutral-700',
+    high: 'bg-red-50 text-overdue border border-red-200',
+    medium: 'bg-amber-50 text-due-soon border border-amber-200',
+    low: 'bg-green-50 text-done border border-green-200',
+    pending: 'bg-neutral-100 text-neutral-600',
+    in_progress: 'bg-blue-50 text-primary border border-blue-200',
+    completed: 'bg-green-50 text-done border border-green-200',
+    overdue: 'bg-overdue text-white font-semibold',
+    urgent: 'bg-amber-500 text-white font-semibold',
+    warning: 'bg-primary-50 text-primary border border-blue-200',
+    outline: 'border border-neutral-200 text-neutral-600',
   };
 
   const sizeStyles = {

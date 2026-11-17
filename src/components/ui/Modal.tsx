@@ -47,7 +47,7 @@ export function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/40 animate-in fade-in duration-150">
       <div
         className="fixed inset-0"
         onClick={onClose}
@@ -55,27 +55,27 @@ export function Modal({
       />
       <div
         className={cn(
-          'relative w-full rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 overflow-hidden z-10 max-h-[90vh] flex flex-col',
+          'relative w-full rounded-2xl bg-white border border-neutral-200 shadow-xl p-6 overflow-hidden z-10 max-h-[90vh] flex flex-col',
           maxWidthClasses[maxWidth]
         )}
       >
-        <div className="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-start justify-between pb-3 border-b border-neutral-100">
           <div>
             {title && (
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-neutral-900">
                 {title}
               </h3>
             )}
             {description && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-muted mt-0.5">
                 {description}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Close modal"
+            className="p-1 rounded-lg text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
+            aria-label="ปิดหน้าต่าง"
           >
             <X className="w-5 h-5" />
           </button>

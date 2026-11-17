@@ -21,19 +21,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none select-none';
+      'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none select-none';
 
     const variants = {
       primary:
-        'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow focus:ring-indigo-500 border border-transparent dark:bg-indigo-600 dark:hover:bg-indigo-500',
+        'bg-primary hover:bg-primary-dark text-white shadow-sm focus:ring-primary border border-transparent',
       secondary:
-        'bg-slate-100 hover:bg-slate-200 text-slate-900 focus:ring-slate-400 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100',
+        'bg-neutral-100 hover:bg-neutral-200 text-neutral-900 focus:ring-neutral-400',
       outline:
-        'border border-slate-300 hover:bg-slate-50 text-slate-700 focus:ring-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:text-slate-200',
+        'border border-neutral-200 hover:bg-neutral-50 text-neutral-700 focus:ring-neutral-300',
       danger:
-        'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500',
+        'bg-overdue hover:bg-red-700 text-white shadow-sm focus:ring-overdue',
       ghost:
-        'hover:bg-slate-100 text-slate-700 hover:text-slate-900 focus:ring-slate-400 dark:hover:bg-slate-800 dark:text-slate-300 dark:hover:text-white',
+        'hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900 focus:ring-neutral-300',
     };
 
     const sizes = {

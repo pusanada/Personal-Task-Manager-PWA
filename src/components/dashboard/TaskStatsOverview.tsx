@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { AlertCircle, CalendarCheck, Clock, CheckCircle } from 'lucide-react';
 import { TaskStats } from '@/types/task';
 import { cn } from '@/lib/utils/cn';
 
@@ -10,88 +9,63 @@ interface TaskStatsOverviewProps {
   stats: TaskStats;
 }
 
+/**
+ * แถบสรุปสถิติแบบกระชับ (ไม่ใช้การ์ดใหญ่) — คลิกได้เพื่อกรองงานในหน้า "งานทั้งหมด"
+ */
 export function TaskStatsOverview({ stats }: TaskStatsOverviewProps) {
-  const cards = [
+  const items = [
     {
-      title: 'Overdue',
+      label: 'เกินกำหนด',
       count: stats.overdue,
-      description: 'Require immediate action',
-      icon: AlertCircle,
-      color: 'text-rose-600 dark:text-rose-400',
-      bgColor: 'bg-rose-50 dark:bg-rose-950/30',
-      borderColor: 'border-rose-200/80 dark:border-rose-900/60',
-      badgeClass: stats.overdue > 0 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500',
-      filterHref: '/tasks?status=Active&timeRange=Overdue',
+      dot: 'bg-overdue',
+      countClass: stats.overdue > 0 ? 'text-overdue' : 'text-neutral-400',
+      href: '/tasks?status=Active&timeRange=Overdue',
     },
     {
-      title: 'Due Today',
+      label: 'ครบกำหนดวันนี้',
       count: stats.dueToday,
-      description: 'Deadlines before midnight',
-      icon: CalendarCheck,
-      color: 'text-amber-600 dark:text-amber-400',
-      bgColor: 'bg-amber-50 dark:bg-amber-950/30',
-      borderColor: 'border-amber-200/80 dark:border-amber-900/60',
-      badgeClass: stats.dueToday > 0 ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500',
-      filterHref: '/tasks?status=Active&timeRange=Today',
+      dot: 'bg-due-soon',
+      countClass: stats.dueToday > 0 ? 'text-due-soon' : 'text-neutral-400',
+      href: '/tasks?status=Active&timeRange=Today',
     },
     {
-      title: 'Due In 48h',
+      label: 'ภายใน 48 ชม.',
       count: stats.dueWithin48h,
-      description: 'Approaching next 2 days',
-      icon: Clock,
-      color: 'text-indigo-600 dark:text-indigo-400',
-      bgColor: 'bg-indigo-50 dark:bg-indigo-950/30',
-      borderColor: 'border-indigo-200/80 dark:border-indigo-900/60',
-      badgeClass: stats.dueWithin48h > 0 ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500',
-      filterHref: '/tasks?status=Active&timeRange=48h',
+      dot: 'bg-primary',
+      countClass: 'text-neutral-900',
+      href: '/tasks?status=Active&timeRange=48h',
     },
     {
-      title: 'Completed',
+      label: 'เสร็จแล้ว',
       count: stats.completed,
-      description: stats.completedToday > 0 ? `${stats.completedToday} done today` : 'Total finished',
-      icon: CheckCircle,
-      color: 'text-emerald-600 dark:text-emerald-400',
-      bgColor: 'bg-emerald-50 dark:bg-emerald-950/30',
-      borderColor: 'border-emerald-200/80 dark:border-emerald-900/60',
-      badgeClass: 'bg-emerald-500 text-white',
-      filterHref: '/tasks?status=Completed',
+      dot: 'bg-done',
+      countClass: 'text-neutral-900',
+      href: '/tasks?status=Completed',
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      {cards.map((card, idx) => {
-        const Icon = card.icon;
-
-        return (
-          <Link
-            key={idx}
-            href={card.filterHref}
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 rounded-xl bg-surface border border-neutral-200">
+      {items.map((item, idx) => (
+        <Link
+          key={idx}
+          href={item.href}
+          className="group flex items-center gap-2"
+        >
+          <span className={cn('w-2 h-2 rounded-full shrink-0', item.dot)} />
+          <span
             className={cn(
-              'group rounded-xl p-4 border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between bg-white dark:bg-slate-900',
-              card.borderColor
+              'text-lg font-semibold tabular-nums leading-none',
+              item.countClass
             )}
           >
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                {card.title}
-              </span>
-              <div className={cn('p-2 rounded-lg', card.bgColor)}>
-                <Icon className={cn('w-4 h-4', card.color)} />
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                {card.count}
-              </span>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-                {card.description}
-              </p>
-            </div>
-          </Link>
-        );
-      })}
+            {item.count}
+          </span>
+          <span className="text-xs text-muted group-hover:text-neutral-700 transition-colors">
+            {item.label}
+          </span>
+        </Link>
+      ))}
     </div>
   );
 }

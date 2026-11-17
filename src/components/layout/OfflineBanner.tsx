@@ -9,18 +9,18 @@ export function OfflineBanner() {
 
   if (isOffline) {
     return (
-      <div className="bg-amber-500 text-slate-950 px-4 py-2 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm animate-in slide-in-from-top">
-        <WifiOff className="w-4 h-4 animate-pulse" />
-        <span>You are currently offline. Changes are saved locally and will sync when reconnected.</span>
+      <div className="bg-amber-50 text-amber-800 border-b border-amber-200 px-4 py-2 text-xs font-medium flex items-center justify-center gap-2">
+        <WifiOff className="w-4 h-4" />
+        <span>คุณออฟไลน์อยู่ การเปลี่ยนแปลงจะถูกบันทึกไว้ในเครื่องและซิงค์เมื่อกลับมาเชื่อมต่ออีกครั้ง</span>
       </div>
     );
   }
 
   if (hasReconnected) {
     return (
-      <div className="bg-emerald-600 text-white px-4 py-2 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm animate-in slide-in-from-top">
+      <div className="bg-green-50 text-done border-b border-green-200 px-4 py-2 text-xs font-medium flex items-center justify-center gap-2">
         <Wifi className="w-4 h-4" />
-        <span>Connected back online!</span>
+        <span>กลับมาเชื่อมต่อแล้ว</span>
       </div>
     );
   }

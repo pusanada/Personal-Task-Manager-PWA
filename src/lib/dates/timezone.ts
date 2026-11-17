@@ -12,6 +12,24 @@ import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 
 export const DEFAULT_TIMEZONE = 'Asia/Bangkok';
 
+const THAI_MONTHS = [
+  'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+  'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.',
+];
+
+const ENGLISH_MONTHS = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+/** แปลงชื่อเดือนภาษาอังกฤษจาก date-fns เป็นตัวย่อภาษาไทย */
+function toThaiMonthText(text: string): string {
+  return text.replace(
+    /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g,
+    (m) => THAI_MONTHS[ENGLISH_MONTHS.indexOf(m)] ?? m
+  );
+}
+
 /**
  * Returns current Date in the specified timezone (default Asia/Bangkok)
  */
@@ -92,15 +110,15 @@ export function getRemainingTimeString(deadline: string | Date | null): {
 
     let timeStr = '';
     if (mins < 60) {
-      timeStr = `${mins}m ago`;
+      timeStr = `${mins} นาที`;
     } else if (hours < 24) {
-      timeStr = `${hours}h ago`;
+      timeStr = `${hours} ชม.`;
     } else {
-      timeStr = `${days}d ago`;
+      timeStr = `${days} วัน`;
     }
 
     return {
-      label: `Overdue (${timeStr})`,
+      label: `เกินกำหนด ${timeStr}`,
       isOverdue: true,
       urgency: 'overdue',
     };
@@ -113,25 +131,25 @@ export function getRemainingTimeString(deadline: string | Date | null): {
 
   if (mins < 60) {
     return {
-      label: `${mins}m left`,
+      label: `อีก ${mins} นาที`,
       isOverdue: false,
       urgency: 'urgent', // within 1 hour
     };
   } else if (hours < 24) {
     return {
-      label: `${hours}h left`,
+      label: `อีก ${hours} ชม.`,
       isOverdue: false,
       urgency: 'urgent', // within 24 hours
     };
   } else if (hours <= 48) {
     return {
-      label: `${Math.ceil(hours / 24)}d left (${hours}h)`,
+      label: `อีก ${Math.ceil(hours / 24)} วัน`,
       isOverdue: false,
       urgency: 'warning', // 24-48 hours
     };
   } else {
     return {
-      label: `${days}d left`,
+      label: `อีก ${days} วัน`,
       isOverdue: false,
       urgency: 'normal',
     };
@@ -146,12 +164,12 @@ export function formatDeadline(
   tz: string = DEFAULT_TIMEZONE,
   includeTime: boolean = true
 ): string {
-  if (!deadline) return 'No deadline';
+  if (!deadline) return 'ไม่ได้ระบุกำหนดส่ง';
   const date = typeof deadline === 'string' ? parseISO(deadline) : deadline;
-  if (isNaN(date.getTime())) return 'Invalid date';
+  if (isNaN(date.getTime())) return 'วันที่ไม่ถูกต้อง';
 
   const pattern = includeTime ? 'dd MMM yyyy, HH:mm' : 'dd MMM yyyy';
-  return formatInTimeZone(date, tz, pattern);
+  return toThaiMonthText(formatInTimeZone(date, tz, pattern));
 }
 
 /**

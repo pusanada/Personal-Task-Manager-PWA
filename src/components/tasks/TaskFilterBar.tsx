@@ -41,23 +41,26 @@ export function TaskFilterBar({
     onSubjectFilterChange('All');
   };
 
+  const selectClass =
+    'px-2.5 py-1.5 rounded-lg border border-neutral-200 bg-white text-neutral-700 font-medium focus:outline-none focus:ring-1 focus:ring-primary';
+
   return (
-    <div className="space-y-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-      {/* Top search & clear row */}
+    <div className="space-y-3 bg-white p-4 rounded-xl border border-neutral-200">
+      {/* ช่องค้นหา */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search tasks, courses, or descriptions..."
+            placeholder="ค้นหางาน วิชา หรือรายละเอียด..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-9 pr-8 py-2 text-sm rounded-lg border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-neutral-400 hover:text-neutral-600"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -67,54 +70,54 @@ export function TaskFilterBar({
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+            className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-overdue hover:bg-red-50 rounded-lg transition-colors"
           >
             <X className="w-3.5 h-3.5" />
-            <span>Clear Filters</span>
+            <span>ล้างตัวกรอง</span>
           </button>
         )}
       </div>
 
-      {/* Filter Selectors Row */}
-      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/70 text-xs">
-        <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 font-medium mr-1">
+      {/* ตัวกรอง */}
+      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-neutral-100 text-xs">
+        <div className="flex items-center gap-1.5 text-muted font-medium mr-1">
           <Filter className="w-3.5 h-3.5" />
-          <span>Filters:</span>
+          <span>ตัวกรอง:</span>
         </div>
 
-        {/* Status Filter */}
+        {/* สถานะ */}
         <select
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
-          className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium focus:outline-none"
+          className={selectClass}
         >
-          <option value="Active">Active Tasks (Excl. Completed)</option>
-          <option value="All">All Statuses</option>
-          <option value="Pending">⏳ Pending Only</option>
-          <option value="In Progress">⚡ In Progress Only</option>
-          <option value="Completed">✅ Completed Only</option>
+          <option value="Active">งานที่ยังไม่เสร็จ</option>
+          <option value="All">ทุกสถานะ</option>
+          <option value="Pending">รอดำเนินการ</option>
+          <option value="In Progress">กำลังทำ</option>
+          <option value="Completed">เสร็จแล้ว</option>
         </select>
 
-        {/* Priority Filter */}
+        {/* ความสำคัญ */}
         <select
           value={priorityFilter}
           onChange={(e) => onPriorityFilterChange(e.target.value)}
-          className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium focus:outline-none"
+          className={selectClass}
         >
-          <option value="All">All Priorities</option>
-          <option value="High">🔴 High Priority</option>
-          <option value="Medium">🟡 Medium Priority</option>
-          <option value="Low">🟢 Low Priority</option>
+          <option value="All">ทุกความสำคัญ</option>
+          <option value="High">สูง</option>
+          <option value="Medium">กลาง</option>
+          <option value="Low">ต่ำ</option>
         </select>
 
-        {/* Subject Filter */}
+        {/* วิชา */}
         {availableSubjects.length > 0 && (
           <select
             value={subjectFilter}
             onChange={(e) => onSubjectFilterChange(e.target.value)}
-            className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium focus:outline-none"
+            className={selectClass}
           >
-            <option value="All">All Subjects ({availableSubjects.length})</option>
+            <option value="All">ทุกวิชา ({availableSubjects.length})</option>
             {availableSubjects.map((sub) => (
               <option key={sub} value={sub}>
                 {sub}
@@ -123,8 +126,8 @@ export function TaskFilterBar({
           </select>
         )}
 
-        <span className="ml-auto text-xs text-slate-400 font-medium">
-          Showing {totalResults} tasks
+        <span className="ml-auto text-xs text-muted font-medium">
+          พบ {totalResults} งาน
         </span>
       </div>
     </div>

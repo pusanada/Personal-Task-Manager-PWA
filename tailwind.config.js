@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
-  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,18 +9,21 @@ const config = {
     extend: {
       colors: {
         background: "var(--background)",
+        surface: "var(--surface)",
         foreground: "var(--foreground)",
-        card: "var(--card)",
-        "card-foreground": "var(--card-foreground)",
-        border: "var(--border)",
-        brand: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          200: "#c7d2fe",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
+        muted: "var(--muted)",
+        "border-base": "var(--border)",
+        primary: {
+          DEFAULT: "#2563eb",
+          dark: "#1d4ed8",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          600: "#2563eb",
+          700: "#1d4ed8",
         },
+        overdue: "#dc2626",
+        "due-soon": "#d97706",
+        done: "#16a34a",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

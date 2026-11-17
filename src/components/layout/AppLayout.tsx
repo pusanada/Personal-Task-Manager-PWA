@@ -56,7 +56,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         openEditTask: handleEditTask,
       }}
     >
-      <div className="min-h-screen flex flex-col bg-slate-50/50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+      <div className="min-h-screen flex flex-col bg-white text-neutral-900 antialiased selection:bg-primary selection:text-white">
         <OfflineBanner />
 
         <div className="flex flex-1">
@@ -65,7 +65,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-0">
             <MobileTopNav onOpenAddTask={handleOpenAddTask} />
 
-            <main className="flex-1 p-4 md:p-8 max-w-6xl mx-auto w-full">
+            <main className="flex-1 p-4 md:p-8 max-w-[1000px] mx-auto w-full">
               {children}
             </main>
           </div>

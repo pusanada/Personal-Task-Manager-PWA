@@ -16,7 +16,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-medium text-neutral-600"
           >
             {label}
           </label>
@@ -25,17 +25,17 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'w-full px-3 py-2 text-sm rounded-lg border bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer',
+            'w-full px-3 py-2 text-sm rounded-lg border bg-white text-neutral-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary cursor-pointer',
             error
-              ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-200'
-              : 'border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600',
+              ? 'border-overdue focus:border-overdue focus:ring-red-100'
+              : 'border-neutral-200 hover:border-neutral-300',
             className
           )}
           {...props}
         >
           {children}
         </select>
-        {error && <p className="text-xs text-rose-600 dark:text-rose-400">{error}</p>}
+        {error && <p className="text-xs text-overdue">{error}</p>}
       </div>
     );
   }

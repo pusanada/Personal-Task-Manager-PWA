@@ -25,6 +25,8 @@ export interface TaskCreateInput {
   external_url?: string | null;
 }
 
+export type CreateTaskInput = TaskCreateInput;
+
 export interface TaskUpdateInput {
   title?: string;
   subject?: string | null;
