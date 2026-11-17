@@ -1,11 +1,11 @@
 {
-  "name": "TaskFlow — University Task Manager",
+  "name": "TaskFlow — ผู้ช่วยจัดการงานส่วนตัว",
   "short_name": "TaskFlow",
-  "description": "Personal task management PWA with smart Excel deadline extraction for university students",
+  "description": "แอปจัดการงานส่วนตัว พร้อมนำเข้าไฟล์ Excel แจ้งเตือนกำหนดส่ง และใช้งานได้แม้ไม่มีอินเทอร์เน็ต",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#4f46e5",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "scope": "/",
   "categories": ["productivity", "education"],
@@ -61,23 +61,23 @@
   ],
   "shortcuts": [
     {
-      "name": "Today's Focus",
-      "short_name": "Today",
-      "description": "View urgent tasks and upcoming deadlines",
+      "name": "โฟกัสวันนี้",
+      "short_name": "วันนี้",
+      "description": "ดูงานด่วนและกำหนดส่งที่กำลังจะถึง",
       "url": "/",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "All Tasks",
-      "short_name": "Tasks",
-      "description": "View and manage all chronological tasks",
+      "name": "งานทั้งหมด",
+      "short_name": "งาน",
+      "description": "ดูและจัดการงานทั้งหมดเรียงตามกำหนดส่ง",
       "url": "/tasks",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Import Excel",
-      "short_name": "Import",
-      "description": "Upload syllabus and assignment spreadsheets",
+      "name": "นำเข้า Excel",
+      "short_name": "นำเข้า",
+      "description": "อัปโหลดตารางเรียนและใบสั่งงาน",
       "url": "/import",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }

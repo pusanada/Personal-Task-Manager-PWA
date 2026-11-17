@@ -29,7 +29,7 @@ export function useTasks() {
       const data = await fetchAllTasks();
       setTasks(data);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to load tasks';
+      const msg = err instanceof Error ? err.message : 'โหลดรายการงานไม่สำเร็จ';
       setError(msg);
     } finally {
       setLoading(false);
