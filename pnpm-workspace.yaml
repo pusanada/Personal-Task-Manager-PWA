@@ -1,4 +1,10 @@
 allowBuilds:
+  '@babel/core': set this to true or false
+  '@babel/helper-compilation-targets': set this to true or false
+  '@babel/helper-create-class-features-plugin': set this to true or false
+  '@babel/helper-create-regexp-features-plugin': set this to true or false
+  '@babel/helper-define-polyfill-provider': set this to true or false
+  '@babel/helper-remap-async-to-generator': set this to true or false
   '@firebase/util': true
   esbuild: true
   protobufjs: true
