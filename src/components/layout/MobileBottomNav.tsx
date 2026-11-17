@@ -19,54 +19,72 @@ interface MobileBottomNavProps {
 export function MobileBottomNav({ onOpenAddTask }: MobileBottomNavProps) {
   const pathname = usePathname();
 
-  const links = [
-    { label: 'ภาพรวม', href: '/', icon: LayoutDashboard },
-    { label: 'งาน', href: '/tasks', icon: CheckSquare },
-    { label: 'เพิ่มงาน', isAction: true, onClick: onOpenAddTask, icon: Plus },
-    { label: 'นำเข้า', href: '/import', icon: FileSpreadsheet },
-    { label: 'ตั้งค่า', href: '/settings', icon: Settings },
-  ];
-
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-neutral-200 px-2 py-1.5 flex items-center justify-around safe-area-bottom">
-      {links.map((item, idx) => {
-        if (item.isAction) {
-          return (
-            <button
-              key={idx}
-              onClick={item.onClick}
-              className="flex flex-col items-center justify-center p-1 group"
-              aria-label="เพิ่มงาน"
-            >
-              <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-sm group-active:scale-95 transition-transform -mt-3 border-2 border-white">
-                <Plus className="w-5 h-5 stroke-[2.5]" />
-              </div>
-              <span className="text-[10px] font-medium text-neutral-600 mt-0.5">
-                {item.label}
-              </span>
-            </button>
-          );
-        }
+    <nav className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-40 bg-white/95 backdrop-blur-md border border-neutral-200/80 rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.08)] px-3 py-2 flex items-center justify-between select-none safe-area-bottom">
+      {/* 1. ภาพรวม */}
+      <Link
+        href="/"
+        className={cn(
+          'flex flex-col items-center justify-center w-14 py-1 rounded-full text-[11px] font-medium transition-colors',
+          pathname === '/'
+            ? 'text-primary font-semibold'
+            : 'text-neutral-500 hover:text-neutral-900'
+        )}
+      >
+        <LayoutDashboard className={cn('w-5 h-5', pathname === '/' && 'stroke-[2.5] text-primary')} />
+        <span className="mt-0.5 text-[10px]">ภาพรวม</span>
+      </Link>
 
-        const isActive = pathname === item.href;
-        const Icon = item.icon;
+      {/* 2. งานทั้งหมด */}
+      <Link
+        href="/tasks"
+        className={cn(
+          'flex flex-col items-center justify-center w-14 py-1 rounded-full text-[11px] font-medium transition-colors',
+          pathname === '/tasks'
+            ? 'text-primary font-semibold'
+            : 'text-neutral-500 hover:text-neutral-900'
+        )}
+      >
+        <CheckSquare className={cn('w-5 h-5', pathname === '/tasks' && 'stroke-[2.5] text-primary')} />
+        <span className="mt-0.5 text-[10px]">งาน</span>
+      </Link>
 
-        return (
-          <Link
-            key={item.href}
-            href={item.href!}
-            className={cn(
-              'flex flex-col items-center justify-center py-1 px-3 rounded-lg text-[10px] font-medium transition-colors',
-              isActive
-                ? 'text-primary font-semibold'
-                : 'text-muted hover:text-neutral-900'
-            )}
-          >
-            <Icon className={cn('w-5 h-5', isActive && 'stroke-[2.5]')} />
-            <span className="mt-0.5">{item.label}</span>
-          </Link>
-        );
-      })}
+      {/* 3. ปุ่มเพิ่มงานกลาง (Floating Action Button) */}
+      <button
+        onClick={onOpenAddTask}
+        className="w-11 h-11 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white flex items-center justify-center shadow-md active:scale-90 transition-transform shrink-0"
+        aria-label="เพิ่มงานใหม่"
+      >
+        <Plus className="w-5 h-5 stroke-[2.5]" />
+      </button>
+
+      {/* 4. นำเข้า Excel */}
+      <Link
+        href="/import"
+        className={cn(
+          'flex flex-col items-center justify-center w-14 py-1 rounded-full text-[11px] font-medium transition-colors',
+          pathname === '/import'
+            ? 'text-primary font-semibold'
+            : 'text-neutral-500 hover:text-neutral-900'
+        )}
+      >
+        <FileSpreadsheet className={cn('w-5 h-5', pathname === '/import' && 'stroke-[2.5] text-primary')} />
+        <span className="mt-0.5 text-[10px]">นำเข้า</span>
+      </Link>
+
+      {/* 5. ตั้งค่า */}
+      <Link
+        href="/settings"
+        className={cn(
+          'flex flex-col items-center justify-center w-14 py-1 rounded-full text-[11px] font-medium transition-colors',
+          pathname === '/settings'
+            ? 'text-primary font-semibold'
+            : 'text-neutral-500 hover:text-neutral-900'
+        )}
+      >
+        <Settings className={cn('w-5 h-5', pathname === '/settings' && 'stroke-[2.5] text-primary')} />
+        <span className="mt-0.5 text-[10px]">ตั้งค่า</span>
+      </Link>
     </nav>
   );
 }

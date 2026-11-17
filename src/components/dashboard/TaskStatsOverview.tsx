@@ -4,68 +4,89 @@ import React from 'react';
 import Link from 'next/link';
 import { TaskStats } from '@/types/task';
 import { cn } from '@/lib/utils/cn';
+import { AlertCircle, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 
 interface TaskStatsOverviewProps {
   stats: TaskStats;
 }
 
-/**
- * แถบสรุปสถิติแบบกระชับ (ไม่ใช้การ์ดใหญ่) — คลิกได้เพื่อกรองงานในหน้า "งานทั้งหมด"
- */
 export function TaskStatsOverview({ stats }: TaskStatsOverviewProps) {
-  const items = [
+  const cards = [
     {
       label: 'เกินกำหนด',
       count: stats.overdue,
-      dot: 'bg-overdue',
-      countClass: stats.overdue > 0 ? 'text-overdue' : 'text-neutral-400',
-      href: '/tasks?status=Active&timeRange=Overdue',
+      sub: stats.overdue > 0 ? 'ต้องรีบส่งด่วน' : 'ไม่มีงานค้าง',
+      color: 'text-overdue',
+      bg: stats.overdue > 0 ? 'bg-red-50/60' : 'bg-surface',
+      borderColor: stats.overdue > 0 ? 'border-red-200' : 'border-neutral-200',
+      icon: AlertCircle,
+      href: '/tasks?status=Active',
     },
     {
       label: 'ครบกำหนดวันนี้',
       count: stats.dueToday,
-      dot: 'bg-due-soon',
-      countClass: stats.dueToday > 0 ? 'text-due-soon' : 'text-neutral-400',
-      href: '/tasks?status=Active&timeRange=Today',
+      sub: 'กำหนดส่งภายในวันนี้',
+      color: 'text-primary',
+      bg: stats.dueToday > 0 ? 'bg-blue-50/60' : 'bg-surface',
+      borderColor: stats.dueToday > 0 ? 'border-blue-200' : 'border-neutral-200',
+      icon: Calendar,
+      href: '/tasks?status=Active',
     },
     {
       label: 'ภายใน 48 ชม.',
       count: stats.dueWithin48h,
-      dot: 'bg-primary',
-      countClass: 'text-neutral-900',
-      href: '/tasks?status=Active&timeRange=48h',
+      sub: 'ใกล้ถึงกำหนด',
+      color: 'text-due-soon',
+      bg: stats.dueWithin48h > 0 ? 'bg-amber-50/60' : 'bg-surface',
+      borderColor: stats.dueWithin48h > 0 ? 'border-amber-200' : 'border-neutral-200',
+      icon: Clock,
+      href: '/tasks?status=Active',
     },
     {
-      label: 'เสร็จแล้ว',
+      label: 'เสร็จสิ้นแล้ว',
       count: stats.completed,
-      dot: 'bg-done',
-      countClass: 'text-neutral-900',
+      sub: `จากทั้งหมด ${stats.total} งาน`,
+      color: 'text-done',
+      bg: 'bg-surface',
+      borderColor: 'border-neutral-200',
+      icon: CheckCircle2,
       href: '/tasks?status=Completed',
     },
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 rounded-xl bg-surface border border-neutral-200">
-      {items.map((item, idx) => (
-        <Link
-          key={idx}
-          href={item.href}
-          className="group flex items-center gap-2"
-        >
-          <span className={cn('w-2 h-2 rounded-full shrink-0', item.dot)} />
-          <span
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 select-none">
+      {cards.map((card, idx) => {
+        const Icon = card.icon;
+        return (
+          <Link
+            key={idx}
+            href={card.href}
             className={cn(
-              'text-lg font-semibold tabular-nums leading-none',
-              item.countClass
+              'group p-3.5 sm:p-4 rounded-xl border bg-white hover:bg-neutral-50/80 transition-all flex flex-col justify-between',
+              card.borderColor
             )}
           >
-            {item.count}
-          </span>
-          <span className="text-xs text-muted group-hover:text-neutral-700 transition-colors">
-            {item.label}
-          </span>
-        </Link>
-      ))}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted group-hover:text-neutral-900 transition-colors">
+                {card.label}
+              </span>
+              <div className={cn('p-1.5 rounded-lg', card.bg)}>
+                <Icon className={cn('w-4 h-4', card.color)} />
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <div className={cn('text-2xl sm:text-3xl font-semibold tabular-nums tracking-tight', card.color)}>
+                {card.count}
+              </div>
+              <p className="text-[11px] text-muted mt-0.5 truncate">
+                {card.sub}
+              </p>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }

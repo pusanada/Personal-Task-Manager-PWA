@@ -62,7 +62,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex flex-1">
           <Sidebar onOpenAddTask={handleOpenAddTask} />
 
-          <div className="flex-1 flex flex-col min-w-0 pb-16 md:pb-0">
+          <div className="flex-1 flex flex-col min-w-0 pb-24 md:pb-8">
             <MobileTopNav onOpenAddTask={handleOpenAddTask} />
 
             <main className="flex-1 p-4 md:p-8 max-w-[1000px] mx-auto w-full">

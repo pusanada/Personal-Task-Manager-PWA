@@ -67,18 +67,18 @@ export function TaskCard({
       )}
     >
       <div className="flex items-start gap-3">
-        {/* Checkbox */}
+        {/* Checkbox วงกลมสไตล์ Things 3 / Google Tasks */}
         <button
           onClick={() => onToggle(task.id, task.status)}
           className={cn(
-            'mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary shrink-0',
+            'mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary shrink-0',
             isCompleted
               ? 'bg-done border-done text-white'
-              : 'border-neutral-300 hover:border-primary'
+              : 'border-neutral-300 hover:border-primary hover:bg-neutral-50'
           )}
           aria-label={isCompleted ? 'ทำเครื่องหมายว่ายังไม่เสร็จ' : 'ทำเครื่องหมายว่าเสร็จแล้ว'}
         >
-          {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+          {isCompleted && <Check className="w-3 h-3 stroke-[3]" />}
         </button>
 
         {/* เนื้อหา */}

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AppLayout, useTaskModal } from '@/components/layout/AppLayout';
 import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
 import { TaskStatsOverview } from '@/components/dashboard/TaskStatsOverview';
+import { WeekStrip } from '@/components/dashboard/WeekStrip';
 import { TodaysFocusSection } from '@/components/dashboard/TodaysFocusSection';
 import { UpcomingDeadlinesSection } from '@/components/dashboard/UpcomingDeadlinesSection';
 import { DeleteConfirmModal } from '@/components/tasks/DeleteConfirmModal';
 import { useTasks } from '@/hooks/useTasks';
 import { Task, TaskStatus } from '@/types/task';
+import { isSameDay } from 'date-fns';
 
 function DashboardContent() {
   const { openAddTask, openEditTask } = useTaskModal();
@@ -23,6 +25,7 @@ function DashboardContent() {
     deleteTask,
   } = useTasks();
 
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<Date | null>(null);
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
@@ -41,9 +44,22 @@ function DashboardContent() {
     await updateTask(id, { status: newStatus });
   };
 
+  // กรองงานตามวันที่เลือกบนแถบสัปดาห์ (ถ้าเลือก)
+  const filteredFocusTasks = useMemo(() => {
+    if (!selectedCalendarDate) return todaysFocusTasks;
+    return tasks.filter((t) => {
+      if (!t.deadline || t.status === 'Completed') return false;
+      try {
+        return isSameDay(new Date(t.deadline), selectedCalendarDate);
+      } catch {
+        return false;
+      }
+    });
+  }, [selectedCalendarDate, todaysFocusTasks, tasks]);
+
   return (
     <div className="space-y-6">
-      {/* ส่วนหัว + วันที่ปัจจุบัน */}
+      {/* 1. ส่วนหัวทักทาย + กระดิ่งแจ้งเตือน + วันที่ปัจจุบัน */}
       <GreetingHeader
         completedCount={stats.completed}
         totalCount={stats.total}
@@ -51,8 +67,15 @@ function DashboardContent() {
         onOpenAddTask={openAddTask}
       />
 
-      {/* แถบสรุปสถิติกระชับ */}
+      {/* 2. การ์ดสรุปสถิติ 4 ช่อง (Overview) */}
       <TaskStatsOverview stats={stats} />
+
+      {/* 3. แถบปฏิทินสัปดาห์ปัจจุบัน (Week Strip View แบบตัวอย่าง) */}
+      <WeekStrip
+        tasks={tasks}
+        selectedDate={selectedCalendarDate}
+        onSelectDate={setSelectedCalendarDate}
+      />
 
       {/* Loading Skeleton */}
       {loading && tasks.length === 0 ? (
@@ -65,9 +88,9 @@ function DashboardContent() {
         </div>
       ) : (
         <>
-          {/* Today's Focus Section */}
+          {/* 4. โฟกัสวันนี้ (Today's Focus Section) */}
           <TodaysFocusSection
-            tasks={todaysFocusTasks}
+            tasks={filteredFocusTasks}
             onToggle={toggleTask}
             onEdit={openEditTask}
             onDelete={(task) => setDeletingTask(task)}
@@ -75,14 +98,16 @@ function DashboardContent() {
             onOpenAddTask={openAddTask}
           />
 
-          {/* Upcoming Deadlines Section */}
-          <UpcomingDeadlinesSection
-            tasks={upcomingTasks}
-            onToggle={toggleTask}
-            onEdit={openEditTask}
-            onDelete={(task) => setDeletingTask(task)}
-            onStatusChange={handleStatusChange}
-          />
+          {/* 5. งานที่กำลังจะถึง (Upcoming Deadlines Section) */}
+          {!selectedCalendarDate && (
+            <UpcomingDeadlinesSection
+              tasks={upcomingTasks}
+              onToggle={toggleTask}
+              onEdit={openEditTask}
+              onDelete={(task) => setDeletingTask(task)}
+              onStatusChange={handleStatusChange}
+            />
+          )}
         </>
       )}
 
