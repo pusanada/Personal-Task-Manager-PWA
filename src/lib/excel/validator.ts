@@ -37,7 +37,7 @@ export function validateAndBuildPreviewRows(
         },
         validation: {
           isValid: false,
-          errors: ['Empty row'],
+          errors: ['แถวว่างเปล่า'],
           warnings: [],
           isDuplicate: false,
         },
@@ -73,14 +73,14 @@ export function validateAndBuildPreviewRows(
 
     // Title validation
     if (!title) {
-      errors.push('Task title is required');
+      errors.push('กรุณากรอกชื่องาน');
     }
 
     // Deadline validation
     if (rawDeadline === undefined || rawDeadline === null || String(rawDeadline).trim() === '') {
-      errors.push('Deadline is required');
+      errors.push('กรุณาระบุกำหนดส่ง');
     } else if (!deadline) {
-      errors.push(`Could not parse deadline "${String(rawDeadline)}"`);
+      errors.push(`อ่านวันกำหนดส่ง "${String(rawDeadline)}" ไม่ได้`);
     }
 
     // URL validation if present
@@ -88,7 +88,7 @@ export function validateAndBuildPreviewRows(
       try {
         new URL(external_url.startsWith('http') ? external_url : `https://${external_url}`);
       } catch {
-        warnings.push('URL format may be invalid');
+        warnings.push('รูปแบบ URL อาจไม่ถูกต้อง');
       }
     }
 
@@ -108,9 +108,9 @@ export function validateAndBuildPreviewRows(
 
     const isDuplicate = isExistingDuplicate || isBatchDuplicate;
     if (isExistingDuplicate) {
-      warnings.push('Matches an existing task in your manager');
+      warnings.push('มีงานนี้อยู่แล้วในระบบ');
     } else if (isBatchDuplicate) {
-      warnings.push('Duplicate of another row in this file');
+      warnings.push('ซ้ำกับอีกแถวในไฟล์นี้');
     }
 
     const isValid = errors.length === 0;

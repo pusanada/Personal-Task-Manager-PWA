@@ -3,16 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/Button';
-import { useTheme } from '@/hooks/useTheme';
 import {
   requestNotificationPermissionAndGetToken,
   isPushNotificationSupported,
 } from '@/lib/firebase/client';
 import {
   Bell,
-  Sun,
-  Moon,
-  Laptop,
   CheckCircle2,
   AlertCircle,
   Smartphone,
@@ -22,15 +18,13 @@ import {
 import { cn } from '@/lib/utils/cn';
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
-
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [testingNotification, setTestingNotification] = useState(false);
   const [testResult, setTestResult] = useState<{ success?: boolean; message?: string } | null>(null);
 
-  // Reminder preferences stored in localStorage
+  // การตั้งค่าการแจ้งเตือน (เก็บใน localStorage)
   const [remindOverdue, setRemindOverdue] = useState(true);
   const [remindDueToday, setRemindDueToday] = useState(true);
   const [remind48h, setRemind48h] = useState(true);
@@ -85,7 +79,7 @@ export default function SettingsPage() {
         setFcmToken(result.token);
         localStorage.setItem('taskflow_fcm_token', result.token);
 
-        // Register token with backend
+        // ลงทะเบียน token กับ backend
         await fetch('/api/notifications/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -94,7 +88,7 @@ export default function SettingsPage() {
 
         setTestResult({
           success: true,
-          message: 'Push notifications enabled and device token registered successfully!',
+          message: 'เปิดใช้งานการแจ้งเตือนและลงทะเบียนอุปกรณ์เรียบร้อยแล้ว',
         });
       } else if (result.error) {
         setTestResult({
@@ -103,7 +97,7 @@ export default function SettingsPage() {
         });
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to register notifications';
+      const msg = err instanceof Error ? err.message : 'ลงทะเบียนการแจ้งเตือนไม่สำเร็จ';
       setTestResult({ success: false, message: msg });
     } finally {
       setLoadingToken(false);
@@ -112,15 +106,15 @@ export default function SettingsPage() {
 
   const handleSendTestNotification = async () => {
     if (!fcmToken) {
-      // If no FCM token, test standard browser notification directly
+      // ถ้าไม่มี FCM token ทดสอบการแจ้งเตือนในเบราว์เซอร์โดยตรง
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('🔔 TaskFlow Test Notification', {
-          body: 'Your browser is ready to receive deadline alerts!',
+        new Notification('🔔 ทดสอบการแจ้งเตือน TaskFlow', {
+          body: 'เบราว์เซอร์ของคุณพร้อมรับการแจ้งเตือนกำหนดส่งแล้ว!',
           icon: '/icons/icon-192x192.png',
         });
         setTestResult({
           success: true,
-          message: 'Local notification delivered! (Connect Firebase Admin credentials for full server Web Push).',
+          message: 'ส่งการแจ้งเตือนในเครื่องสำเร็จ! (เชื่อมต่อ Firebase Admin เพื่อใช้ Web Push แบบเต็มรูปแบบ)',
         });
       }
       return;
@@ -135,8 +129,8 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token: fcmToken,
-          title: '🔔 TaskFlow Deadline Reminder',
-          body: 'Great! Your device is ready to receive deadline alerts for upcoming tasks.',
+          title: '🔔 แจ้งเตือนกำหนดส่งจาก TaskFlow',
+          body: 'อุปกรณ์ของคุณพร้อมรับการแจ้งเตือนงานที่กำลังจะถึงแล้ว',
         }),
       });
 
@@ -144,23 +138,23 @@ export default function SettingsPage() {
       if (res.ok && data.success) {
         setTestResult({
           success: true,
-          message: 'Push notification sent to your device via Firebase Cloud Messaging!',
+          message: 'ส่งการแจ้งเตือนไปยังอุปกรณ์ของคุณผ่าน Firebase Cloud Messaging แล้ว!',
         });
       } else {
-        // Fallback to local notification if server admin isn't configured
+        // สำรอง: แจ้งเตือนในเครื่องหากยังไม่ได้ตั้งค่า server admin
         if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification('🔔 TaskFlow Notification', {
-            body: 'Local fallback notification delivered successfully!',
+          new Notification('🔔 การแจ้งเตือน TaskFlow', {
+            body: 'ส่งการแจ้งเตือนสำรองในเครื่องสำเร็จ!',
             icon: '/icons/icon-192x192.png',
           });
         }
         setTestResult({
           success: true,
-          message: data.error || 'Server push completed with local verification.',
+          message: data.error || 'ส่งการแจ้งเตือนสำรองในเครื่องสำเร็จ',
         });
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Test failed';
+      const msg = err instanceof Error ? err.message : 'การทดสอบล้มเหลว';
       setTestResult({ success: false, message: msg });
     } finally {
       setTestingNotification(false);
@@ -173,86 +167,51 @@ export default function SettingsPage() {
     <AppLayout>
       <div className="max-w-3xl space-y-8">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Settings & Preferences
+          <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight">
+            ตั้งค่า
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            Manage deadline notifications, reminder windows, and display themes.
+          <p className="text-xs sm:text-sm text-muted mt-0.5">
+            จัดการการแจ้งเตือนกำหนดส่งและการแจ้งเตือนล่วงหน้า
           </p>
         </div>
 
-        {/* 1. Theme Selection */}
-        <section className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Interface Theme
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Choose your preferred visual appearance.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { id: 'light', label: 'Light', icon: Sun },
-              { id: 'dark', label: 'Dark', icon: Moon },
-              { id: 'system', label: 'System', icon: Laptop },
-            ].map((item) => {
-              const Icon = item.icon;
-              const isSelected = theme === item.id;
-
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setTheme(item.id as any)}
-                  className={cn(
-                    'flex flex-col items-center justify-center p-3.5 rounded-xl border text-xs font-semibold gap-2 transition-all',
-                    isSelected
-                      ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-500/20'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                  )}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* 2. Push Notifications & FCM */}
-        <section className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+        {/* 1. การแจ้งเตือนแบบ Push (FCM) */}
+        <section className="bg-white p-5 rounded-xl border border-neutral-200 space-y-4">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Bell className="w-4 h-4 text-indigo-500" />
-                <span>Push Notifications (Firebase Cloud Messaging)</span>
+              <h3 className="text-base font-semibold text-neutral-900 flex items-center gap-2">
+                <Bell className="w-4 h-4 text-primary" />
+                <span>การแจ้งเตือนแบบ Push</span>
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Receive proactive reminders for urgent tasks and upcoming deadlines.
+              <p className="text-xs text-muted mt-0.5">
+                รับการแจ้งเตือนล่วงหน้าสำหรับงานด่วนและกำหนดส่งที่ใกล้ถึง
               </p>
             </div>
 
             <div className="text-right">
               <span
                 className={cn(
-                  'text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider',
+                  'text-[11px] font-medium px-2.5 py-1 rounded-full',
                   notificationPermission === 'granted'
-                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                    ? 'bg-green-50 text-done'
                     : notificationPermission === 'denied'
-                    ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                    ? 'bg-red-50 text-overdue'
+                    : 'bg-neutral-100 text-neutral-500'
                 )}
               >
-                {notificationPermission}
+                {notificationPermission === 'granted'
+                  ? 'เปิดใช้งาน'
+                  : notificationPermission === 'denied'
+                  ? 'ถูกปฏิเสธ'
+                  : 'ยังไม่เปิดใช้งาน'}
               </span>
             </div>
           </div>
 
           {!isSupported ? (
-            <div className="p-3 text-xs rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-900/60 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
-              <span>Web push notifications are not supported in this browser environment.</span>
+            <div className="p-3 text-xs rounded-lg bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-due-soon" />
+              <span>เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนแบบ Web Push</span>
             </div>
           ) : (
             <div className="space-y-4">
@@ -266,8 +225,8 @@ export default function SettingsPage() {
                   <Bell className="w-4 h-4" />
                   <span>
                     {notificationPermission === 'granted' && fcmToken
-                      ? 'Notifications Active'
-                      : 'Enable Push Notifications'}
+                      ? 'การแจ้งเตือนทำงานอยู่'
+                      : 'เปิดใช้งานการแจ้งเตือน'}
                   </span>
                 </Button>
 
@@ -279,7 +238,7 @@ export default function SettingsPage() {
                     className="gap-2"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Send Test Notification</span>
+                    <span>ทดสอบการแจ้งเตือน</span>
                   </Button>
                 )}
               </div>
@@ -287,76 +246,76 @@ export default function SettingsPage() {
               {testResult && (
                 <div
                   className={cn(
-                    'p-3 text-xs rounded-xl border flex items-center gap-2',
+                    'p-3 text-xs rounded-lg border flex items-center gap-2',
                     testResult.success
-                      ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
-                      : 'bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200 dark:border-rose-900'
+                      ? 'bg-green-50 text-done border-green-200'
+                      : 'bg-red-50 text-overdue border-red-200'
                   )}
                 >
                   {testResult.success ? (
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                    <AlertCircle className="w-4 h-4 shrink-0" />
                   )}
                   <span>{testResult.message}</span>
                 </div>
               )}
 
-              {/* Reminder Window Preferences */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
-                  Reminder Windows
+              {/* ช่วงเวลาที่ต้องการแจ้งเตือน */}
+              <div className="pt-3 border-t border-neutral-100 space-y-3">
+                <span className="text-xs font-semibold text-neutral-700 block">
+                  ช่วงเวลาแจ้งเตือน
                 </span>
 
                 <div className="space-y-2">
-                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer text-xs">
+                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 cursor-pointer text-xs">
                     <div>
-                      <span className="font-semibold text-slate-900 dark:text-white block">
-                        Overdue Task Alerts
+                      <span className="font-medium text-neutral-900 block">
+                        แจ้งเตือนงานเกินกำหนด
                       </span>
-                      <span className="text-[11px] text-slate-500">
-                        Alert immediately when a task passes its deadline
+                      <span className="text-[11px] text-muted">
+                        แจ้งทันทีเมื่องานเลยกำหนดส่ง
                       </span>
                     </div>
                     <input
                       type="checkbox"
                       checked={remindOverdue}
                       onChange={(e) => saveReminderPref('overdue', e.target.checked)}
-                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                      className="w-4 h-4 rounded text-primary focus:ring-primary"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer text-xs">
+                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 cursor-pointer text-xs">
                     <div>
-                      <span className="font-semibold text-slate-900 dark:text-white block">
-                        Due Today Morning Reminder
+                      <span className="font-medium text-neutral-900 block">
+                        แจ้งเตือนเช้าของวันกำหนดส่ง
                       </span>
-                      <span className="text-[11px] text-slate-500">
-                        Notify in the morning about assignments due before midnight
+                      <span className="text-[11px] text-muted">
+                        แจ้งในตอนเช้าสำหรับงานที่ครบกำหนดภายในวันนี้
                       </span>
                     </div>
                     <input
                       type="checkbox"
                       checked={remindDueToday}
                       onChange={(e) => saveReminderPref('today', e.target.checked)}
-                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                      className="w-4 h-4 rounded text-primary focus:ring-primary"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer text-xs">
+                  <label className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 cursor-pointer text-xs">
                     <div>
-                      <span className="font-semibold text-slate-900 dark:text-white block">
-                        48-Hour Advance Warning
+                      <span className="font-medium text-neutral-900 block">
+                        เตือนล่วงหน้า 48 ชั่วโมง
                       </span>
-                      <span className="text-[11px] text-slate-500">
-                        Advance alert 2 days before deadline for larger projects
+                      <span className="text-[11px] text-muted">
+                        แจ้งเตือนล่วงหน้า 2 วันก่อนกำหนดส่ง สำหรับงานหรือโปรเจกต์ใหญ่
                       </span>
                     </div>
                     <input
                       type="checkbox"
                       checked={remind48h}
                       onChange={(e) => saveReminderPref('48h', e.target.checked)}
-                      className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500"
+                      className="w-4 h-4 rounded text-primary focus:ring-primary"
                     />
                   </label>
                 </div>
@@ -365,33 +324,33 @@ export default function SettingsPage() {
           )}
         </section>
 
-        {/* 3. System & PWA Status */}
-        <section className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-            System & Storage Architecture
+        {/* 2. ระบบและการจัดเก็บ */}
+        <section className="bg-white p-5 rounded-xl border border-neutral-200 space-y-3">
+          <h3 className="text-base font-semibold text-neutral-900">
+            ระบบและการจัดเก็บข้อมูล
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 flex items-center gap-3">
-              <Smartphone className="w-5 h-5 text-indigo-500 shrink-0" />
+            <div className="p-3 rounded-lg bg-surface border border-neutral-200 flex items-center gap-3">
+              <Smartphone className="w-5 h-5 text-primary shrink-0" />
               <div>
-                <span className="font-semibold text-slate-900 dark:text-white block">
+                <span className="font-medium text-neutral-900 block">
                   Progressive Web App (PWA)
                 </span>
-                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  Service Worker & Offline Shell Active
+                <span className="text-[11px] text-done font-medium">
+                  Service Worker และโหมดออฟไลน์ทำงานอยู่
                 </span>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 flex items-center gap-3">
-              <Database className="w-5 h-5 text-teal-500 shrink-0" />
+            <div className="p-3 rounded-lg bg-surface border border-neutral-200 flex items-center gap-3">
+              <Database className="w-5 h-5 text-primary shrink-0" />
               <div>
-                <span className="font-semibold text-slate-900 dark:text-white block">
-                  Database & Storage
+                <span className="font-medium text-neutral-900 block">
+                  ฐานข้อมูลและพื้นที่จัดเก็บ
                 </span>
-                <span className="text-[11px] text-slate-500">
-                  Supabase PostgreSQL + Local-First Fallback
+                <span className="text-[11px] text-muted">
+                  Supabase PostgreSQL + สำรองข้อมูลในเครื่อง
                 </span>
               </div>
             </div>

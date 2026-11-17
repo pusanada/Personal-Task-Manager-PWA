@@ -24,63 +24,63 @@ export function ImportSummaryModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Import Completed"
+      title="นำเข้าเสร็จสมบูรณ์"
       maxWidth="sm"
     >
       <div className="space-y-4">
         <div className="text-center py-2">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-2">
+          <div className="w-12 h-12 rounded-full bg-green-50 text-done mx-auto flex items-center justify-center mb-2">
             <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
           </div>
-          <h4 className="text-base font-bold text-slate-900 dark:text-white">
-            Excel Tasks Imported Successfully
+          <h4 className="text-base font-semibold text-neutral-900">
+            นำเข้างานจาก Excel สำเร็จ
           </h4>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Your schedule has been updated with the extracted tasks and deadlines.
+          <p className="text-xs text-muted mt-0.5">
+            ตารางของคุณได้รับการอัปเดตด้วยงานและกำหนดส่งที่ดึงมาแล้ว
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
-            <span className="text-slate-400 block text-[11px]">Total Rows</span>
-            <span className="text-lg font-bold text-slate-900 dark:text-white">
+          <div className="p-3 rounded-lg bg-surface border border-neutral-200">
+            <span className="text-muted block text-[11px]">แถวทั้งหมด</span>
+            <span className="text-lg font-semibold text-neutral-900">
               {summary.totalRows}
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60">
-            <span className="text-emerald-700 dark:text-emerald-400 block text-[11px] font-semibold">
-              Imported
+          <div className="p-3 rounded-lg bg-green-50 border border-green-200">
+            <span className="text-done block text-[11px] font-medium">
+              นำเข้าแล้ว
             </span>
-            <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
+            <span className="text-lg font-semibold text-done">
               {summary.imported}
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800">
-            <span className="text-slate-400 block text-[11px]">Skipped (Excluded)</span>
-            <span className="text-lg font-bold text-slate-700 dark:text-slate-300">
+          <div className="p-3 rounded-lg bg-surface border border-neutral-200">
+            <span className="text-muted block text-[11px]">ข้าม (ไม่เลือก)</span>
+            <span className="text-lg font-semibold text-neutral-700">
               {summary.skipped}
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60">
-            <span className="text-rose-700 dark:text-rose-400 block text-[11px] font-semibold">
-              Invalid (Errors)
+          <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+            <span className="text-overdue block text-[11px] font-medium">
+              ไม่ถูกต้อง
             </span>
-            <span className="text-lg font-bold text-rose-700 dark:text-rose-400">
+            <span className="text-lg font-semibold text-overdue">
               {summary.invalid}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
           <Button variant="outline" size="sm" onClick={onClose}>
-            Close
+            ปิด
           </Button>
           <Link href="/">
             <Button size="sm" className="gap-1.5">
-              <span>Go to Dashboard</span>
+              <span>ไปที่ภาพรวม</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </Link>

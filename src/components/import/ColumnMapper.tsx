@@ -11,20 +11,30 @@ interface ColumnMapperProps {
   onMappingChange: (fieldKey: TaskFieldKey, newHeader: string | null) => void;
 }
 
+const fieldLabels: Record<TaskFieldKey, string> = {
+  title: 'ชื่องาน',
+  subject: 'วิชา / หมวดหมู่',
+  description: 'รายละเอียด',
+  startDate: 'วันเริ่มต้น',
+  deadline: 'กำหนดส่ง',
+  priority: 'ความสำคัญ',
+  external_url: 'ลิงก์อ้างอิง',
+};
+
 export function ColumnMapper({
   mappings,
   availableHeaders,
   onMappingChange,
 }: ColumnMapperProps) {
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-xs space-y-4">
+    <div className="bg-white border border-neutral-200 rounded-xl p-4 sm:p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-            Column Mapping
+          <h3 className="text-sm font-semibold text-neutral-900">
+            จับคู่คอลัมน์
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Verify or customize how columns from your Excel file match TaskFlow fields.
+          <p className="text-xs text-muted">
+            ตรวจสอบหรือปรับการจับคู่คอลัมน์จากไฟล์ Excel กับช่องข้อมูลของ TaskFlow
           </p>
         </div>
       </div>
@@ -40,24 +50,26 @@ export function ColumnMapper({
               className={cn(
                 'p-3 rounded-lg border text-xs space-y-1.5 transition-colors',
                 hasError
-                  ? 'border-rose-300 dark:border-rose-900 bg-rose-50/40 dark:bg-rose-950/20'
+                  ? 'border-red-200 bg-red-50/50'
                   : isMatched
-                  ? 'border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/20 dark:bg-indigo-950/10'
-                  : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40'
+                  ? 'border-blue-200 bg-primary-50/50'
+                  : 'border-neutral-200 bg-surface'
               )}
             >
-              <div className="flex items-center justify-between font-semibold">
-                <span className="text-slate-900 dark:text-slate-200 flex items-center gap-1">
-                  {mapping.label}
-                  {mapping.required && <span className="text-rose-500">*</span>}
+              <div className="flex items-center justify-between font-medium">
+                <span className="text-neutral-900 flex items-center gap-1">
+                  {fieldLabels[mapping.fieldKey] ?? mapping.label}
+                  {mapping.required && <span className="text-overdue">*</span>}
                 </span>
 
                 {isMatched ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-done shrink-0" />
                 ) : mapping.required ? (
-                  <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                  <AlertCircle className="w-3.5 h-3.5 text-overdue shrink-0" />
                 ) : (
-                  <span className="text-[10px] text-slate-400 font-normal">Optional</span>
+                  <span className="text-[10px] text-neutral-400 font-normal">
+                    ไม่บังคับ
+                  </span>
                 )}
               </div>
 
@@ -70,13 +82,13 @@ export function ColumnMapper({
                   )
                 }
                 className={cn(
-                  'w-full py-1.5 px-2 rounded-md border text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white dark:bg-slate-900',
+                  'w-full py-1.5 px-2 rounded-md border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-white',
                   hasError
-                    ? 'border-rose-400 text-rose-800 dark:text-rose-300'
-                    : 'border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                    ? 'border-overdue text-overdue'
+                    : 'border-neutral-200 text-neutral-800'
                 )}
               >
-                <option value="">— Unmapped (None) —</option>
+                <option value="">— ไม่จับคู่ —</option>
                 {availableHeaders.map((header) => (
                   <option key={header} value={header}>
                     {header}

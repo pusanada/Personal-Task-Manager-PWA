@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Task, TaskPriority, TaskStatus, TaskCreateInput } from '@/types/task';
 import { formatInTimeZone } from 'date-fns-tz';
 import { DEFAULT_TIMEZONE } from '@/lib/dates/timezone';
+import { getPriorityLabel, getStatusLabel } from '@/lib/labels';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -57,7 +58,7 @@ export function TaskModal({
         setDeadlineTime('23:59');
       }
     } else {
-      // Defaults for new task: tomorrow at 23:59
+      // ค่าเริ่มต้นสำหรับงานใหม่: พรุ่งนี้ เวลา 23:59
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       setTitle('');
@@ -76,11 +77,11 @@ export function TaskModal({
     const errs: Record<string, string> = {};
 
     if (!title.trim()) {
-      errs.title = 'Task title is required.';
+      errs.title = 'กรุณากรอกชื่องาน';
     }
 
     if (!deadlineDate) {
-      errs.deadlineDate = 'Deadline date is required.';
+      errs.deadlineDate = 'กรุณาเลือกวันกำหนดส่ง';
     }
 
     if (externalUrl.trim()) {
@@ -90,7 +91,7 @@ export function TaskModal({
           : `https://${externalUrl}`;
         new URL(urlToTest);
       } catch {
-        errs.externalUrl = 'Please enter a valid URL (e.g. https://example.com)';
+        errs.externalUrl = 'รูปแบบ URL ไม่ถูกต้อง (เช่น https://example.com)';
       }
     }
 
@@ -108,7 +109,7 @@ export function TaskModal({
       let finalDeadline: string | null = null;
       if (deadlineDate) {
         const timePart = deadlineTime || '23:59';
-        // Construct ISO string in Asia/Bangkok (+07:00)
+        // สร้าง ISO string ตามเขตเวลา Asia/Bangkok (+07:00)
         const dateString = `${deadlineDate}T${timePart}:00+07:00`;
         finalDeadline = new Date(dateString).toISOString();
       }
@@ -125,7 +126,7 @@ export function TaskModal({
 
       onClose();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to save task';
+      const msg = err instanceof Error ? err.message : 'บันทึกงานไม่สำเร็จ';
       setErrors({ form: msg });
     } finally {
       setSaving(false);
@@ -136,55 +137,55 @@ export function TaskModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={initialTask ? 'Edit Task' : 'Create New Task'}
+      title={initialTask ? 'แก้ไขงาน' : 'เพิ่มงานใหม่'}
       description={
         initialTask
-          ? 'Update the assignment or project details below.'
-          : 'Add a new task to your schedule and track its deadline.'
+          ? 'แก้ไขรายละเอียดงานด้านล่าง'
+          : 'เพิ่มงานใหม่เข้าไปในตารางของคุณ พร้อมติดตามกำหนดส่ง'
       }
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {errors.form && (
-          <div className="p-3 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
+          <div className="p-3 text-xs font-medium rounded-lg bg-red-50 text-overdue border border-red-200">
             {errors.form}
           </div>
         )}
 
-        {/* Title */}
+        {/* ชื่องาน */}
         <Input
-          label="Task Title *"
-          placeholder="e.g. Final Project Report, Calculus HW 4"
+          label="ชื่องาน *"
+          placeholder="เช่น รายงานโปรเจกต์จบ, การบ้านคณิต 4"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           error={errors.title}
           autoFocus
         />
 
-        {/* Subject & Priority Grid */}
+        {/* วิชา & ความสำคัญ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="Subject / Category"
-            placeholder="e.g. CS101, Math, Physics"
+            label="วิชา / หมวดหมู่"
+            placeholder="เช่น CS101, คณิตศาสตร์, ฟิสิกส์"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
           />
 
           <Select
-            label="Priority"
+            label="ความสำคัญ"
             value={priority}
             onChange={(e) => setPriority(e.target.value as TaskPriority)}
           >
-            <option value="High">🔴 High Priority</option>
-            <option value="Medium">🟡 Medium Priority</option>
-            <option value="Low">🟢 Low Priority</option>
+            <option value="High">{getPriorityLabel('High')}</option>
+            <option value="Medium">{getPriorityLabel('Medium')}</option>
+            <option value="Low">{getPriorityLabel('Low')}</option>
           </Select>
         </div>
 
-        {/* Deadline Date & Time */}
+        {/* วัน & เวลากำหนดส่ง */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="Deadline Date *"
+            label="วันกำหนดส่ง *"
             type="date"
             value={deadlineDate}
             onChange={(e) => setDeadlineDate(e.target.value)}
@@ -192,55 +193,55 @@ export function TaskModal({
           />
 
           <Input
-            label="Deadline Time"
+            label="เวลากำหนดส่ง"
             type="time"
             value={deadlineTime}
             onChange={(e) => setDeadlineTime(e.target.value)}
-            helperText="Default: 23:59 (Asia/Bangkok)"
+            helperText="ค่าเริ่มต้น: 23:59 (เวลาประเทศไทย)"
           />
         </div>
 
-        {/* Status */}
+        {/* สถานะ */}
         <Select
-          label="Status"
+          label="สถานะ"
           value={status}
           onChange={(e) => setStatus(e.target.value as TaskStatus)}
         >
-          <option value="Pending">⏳ Pending</option>
-          <option value="In Progress">⚡ In Progress</option>
-          <option value="Completed">✅ Completed</option>
+          <option value="Pending">{getStatusLabel('Pending')}</option>
+          <option value="In Progress">{getStatusLabel('In Progress')}</option>
+          <option value="Completed">{getStatusLabel('Completed')}</option>
         </Select>
 
-        {/* External Link */}
+        {/* ลิงก์อ้างอิง */}
         <Input
-          label="Resource Link / Reference URL"
-          placeholder="e.g. Google Drive, LMS, Canvas assignment URL"
+          label="ลิงก์อ้างอิง (URL)"
+          placeholder="เช่น Google Drive, LMS, ลิงก์งานใน Canvas"
           value={externalUrl}
           onChange={(e) => setExternalUrl(e.target.value)}
           error={errors.externalUrl}
         />
 
-        {/* Description */}
+        {/* รายละเอียด */}
         <div className="space-y-1">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-            Description / Notes
+          <label className="block text-xs font-medium text-neutral-600">
+            รายละเอียด / บันทึกย่อ
           </label>
           <textarea
             rows={3}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-            placeholder="Add rubrics, instructions, or group member notes..."
+            className="w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            placeholder="เพิ่มเกณฑ์การให้คะแนน คำแนะนำ หรือบันทึกกลุ่ม..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+        {/* ปุ่มดำเนินการ */}
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
           <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
-            Cancel
+            ยกเลิก
           </Button>
           <Button type="submit" loading={saving}>
-            {initialTask ? 'Save Changes' : 'Create Task'}
+            {initialTask ? 'บันทึกการแก้ไข' : 'เพิ่มงาน'}
           </Button>
         </div>
       </form>

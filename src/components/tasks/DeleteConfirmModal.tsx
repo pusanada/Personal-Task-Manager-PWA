@@ -27,27 +27,27 @@ export function DeleteConfirmModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Delete Task"
+      title="ลบงาน"
       maxWidth="sm"
     >
       <div className="space-y-4">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200 border border-rose-200/80 dark:border-rose-900/60">
-          <AlertTriangle className="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400" />
-          <p className="text-xs">
-            Are you sure you want to permanently delete{' '}
-            <strong className="font-semibold text-rose-950 dark:text-rose-100">
+        <div className="flex items-start gap-3 p-3 rounded-lg bg-red-50 text-neutral-700 border border-red-200">
+          <AlertTriangle className="w-5 h-5 shrink-0 text-overdue mt-0.5" />
+          <p className="text-xs leading-relaxed">
+            ต้องการลบงาน{' '}
+            <strong className="font-semibold text-neutral-900">
               &quot;{task.title}&quot;
-            </strong>
-            ? This action cannot be undone.
+            </strong>{' '}
+            อย่างถาวรใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
           </p>
         </div>
 
         <div className="flex items-center justify-end gap-2 pt-2">
           <Button variant="outline" size="sm" onClick={onClose} disabled={loading}>
-            Cancel
+            ยกเลิก
           </Button>
           <Button variant="danger" size="sm" onClick={onConfirm} loading={loading}>
-            Delete Task
+            ลบงาน
           </Button>
         </div>
       </div>
