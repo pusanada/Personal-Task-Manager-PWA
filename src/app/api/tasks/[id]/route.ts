@@ -6,6 +6,32 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
+export async function GET(request: Request, context: RouteContext) {
+  try {
+    const { id } = await context.params;
+
+    const supabase = createServerSupabaseClient();
+    if (!supabase) {
+      return NextResponse.json({ error: 'Database not connected' }, { status: 500 });
+    }
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+
+    return NextResponse.json({ data });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
 export async function PUT(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
