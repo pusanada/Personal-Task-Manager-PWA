@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# Firebase Service Account keys
+*firebase-adminsdk*.json
+
 # next-pwa generated files in public
 public/sw.js
 public/sw.js.map
