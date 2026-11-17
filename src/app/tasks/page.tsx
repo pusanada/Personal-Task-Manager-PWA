@@ -121,13 +121,8 @@ function TasksContent() {
         totalResults={filteredTasks.length}
       />
 
-      {/* Loading */}
-      {loading && tasks.length === 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
-          <div className="h-28 bg-neutral-100 rounded-lg" />
-          <div className="h-28 bg-neutral-100 rounded-lg" />
-        </div>
-      ) : filteredTasks.length === 0 ? (
+      {/* Task List or Empty State */}
+      {filteredTasks.length === 0 ? (
         <div className="rounded-xl border border-dashed border-neutral-200 p-12 text-center bg-white">
           <div className="w-12 h-12 rounded-full bg-primary-50 text-primary mx-auto flex items-center justify-center mb-3">
             <Sparkles className="w-6 h-6" />

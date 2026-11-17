@@ -1,0 +1,19 @@
+name: Scheduled Task Reminders
+
+on:
+  schedule:
+    # 01:00 UTC = 08:00 AM Bangkok (Asia/Bangkok)
+    # 04:00 UTC = 11:00 AM Bangkok (Asia/Bangkok)
+    # 10:00 UTC = 05:00 PM Bangkok (Asia/Bangkok)
+    - cron: '0 1,4,10 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Notification Cron Endpoint
+        run: |
+          PROD_URL="https://personal-task-manager-pwa.vercel.app"
+          echo "Triggering $PROD_URL/api/notifications/cron..."
+          curl -s -X GET "$PROD_URL/api/notifications/cron"

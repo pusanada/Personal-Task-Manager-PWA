@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Task, TaskCreateInput, TaskUpdateInput, TaskStats } from '@/types/task';
+import { getLocalTasks } from '@/lib/utils/storage';
 import {
   fetchAllTasks,
   createTask as apiCreateTask,
@@ -19,12 +20,14 @@ import {
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadTasks = useCallback(async () => {
+  const loadTasks = useCallback(async (shouldShowLoading = false) => {
     try {
-      setLoading(true);
+      if (shouldShowLoading) {
+        setLoading(true);
+      }
       setError(null);
       const data = await fetchAllTasks();
       setTasks(data);
@@ -37,10 +40,17 @@ export function useTasks() {
   }, []);
 
   useEffect(() => {
-    loadTasks();
+    // 1. นำข้อมูลจาก cache ท้องถิ่นมาแสดงทันทีเพื่อป้องกันหน้าจอกระพริบ
+    const cached = getLocalTasks();
+    if (cached.length > 0) {
+      setTasks(sortTasksChronologically(cached));
+    }
+
+    // 2. ซิงค์ข้อมูลล่าสุดจากฐานข้อมูลในพื้นหลังอย่างราบรื่น
+    loadTasks(cached.length === 0);
 
     const handleStorageUpdate = () => {
-      loadTasks();
+      loadTasks(false);
     };
 
     window.addEventListener('taskflow-storage-updated', handleStorageUpdate);

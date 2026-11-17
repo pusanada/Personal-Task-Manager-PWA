@@ -77,38 +77,25 @@ function DashboardContent() {
         onSelectDate={setSelectedCalendarDate}
       />
 
-      {/* Loading Skeleton */}
-      {loading && tasks.length === 0 ? (
-        <div className="space-y-4 animate-pulse">
-          <div className="h-6 w-48 bg-neutral-200 rounded" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="h-28 bg-neutral-100 rounded-lg" />
-            <div className="h-28 bg-neutral-100 rounded-lg" />
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* 4. โฟกัสวันนี้ (Today's Focus Section) */}
-          <TodaysFocusSection
-            tasks={filteredFocusTasks}
-            onToggle={toggleTask}
-            onEdit={openEditTask}
-            onDelete={(task) => setDeletingTask(task)}
-            onStatusChange={handleStatusChange}
-            onOpenAddTask={openAddTask}
-          />
+      {/* 4. โฟกัสวันนี้ (Today's Focus Section) */}
+      <TodaysFocusSection
+        tasks={filteredFocusTasks}
+        onToggle={toggleTask}
+        onEdit={openEditTask}
+        onDelete={(task) => setDeletingTask(task)}
+        onStatusChange={handleStatusChange}
+        onOpenAddTask={openAddTask}
+      />
 
-          {/* 5. งานที่กำลังจะถึง (Upcoming Deadlines Section) */}
-          {!selectedCalendarDate && (
-            <UpcomingDeadlinesSection
-              tasks={upcomingTasks}
-              onToggle={toggleTask}
-              onEdit={openEditTask}
-              onDelete={(task) => setDeletingTask(task)}
-              onStatusChange={handleStatusChange}
-            />
-          )}
-        </>
+      {/* 5. งานที่กำลังจะถึง (Upcoming Deadlines Section) */}
+      {!selectedCalendarDate && (
+        <UpcomingDeadlinesSection
+          tasks={upcomingTasks}
+          onToggle={toggleTask}
+          onEdit={openEditTask}
+          onDelete={(task) => setDeletingTask(task)}
+          onStatusChange={handleStatusChange}
+        />
       )}
 
       {/* Delete Confirmation Modal */}
