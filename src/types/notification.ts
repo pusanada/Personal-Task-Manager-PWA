@@ -1,4 +1,11 @@
-export type ReminderType = 'overdue' | 'due_today' | '48h' | '24h';
+export type ReminderType =
+  | 'overdue'
+  | '48h'
+  | 'today_morning'
+  | 'today_noon'
+  | 'today_evening'
+  | 'due_today'
+  | '24h';
 
 export interface NotificationTokenRecord {
   id: string;

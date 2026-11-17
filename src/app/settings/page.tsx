@@ -288,10 +288,10 @@ export default function SettingsPage() {
                   <label className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 cursor-pointer text-xs">
                     <div>
                       <span className="font-medium text-neutral-900 block">
-                        แจ้งเตือนเช้าของวันกำหนดส่ง
+                        แจ้งเตือนวันกำหนดส่ง 3 รอบ (08:00 น., 11:00 น., 17:00 น.)
                       </span>
                       <span className="text-[11px] text-muted">
-                        แจ้งในตอนเช้าสำหรับงานที่ครบกำหนดภายในวันนี้
+                        แจ้งเตือนในวันส่งงาน 3 เวลา: รอบเช้า 8 โมง, รอบสาย 11 โมง, และรอบเย็น 5 โมง
                       </span>
                     </div>
                     <input
@@ -305,10 +305,10 @@ export default function SettingsPage() {
                   <label className="flex items-center justify-between p-2.5 rounded-lg border border-neutral-200 hover:bg-neutral-50 cursor-pointer text-xs">
                     <div>
                       <span className="font-medium text-neutral-900 block">
-                        เตือนล่วงหน้า 48 ชั่วโมง
+                        แจ้งเตือนล่วงหน้า 2 วัน (48 ชั่วโมงก่อนกำหนดส่ง)
                       </span>
                       <span className="text-[11px] text-muted">
-                        แจ้งเตือนล่วงหน้า 2 วันก่อนกำหนดส่ง สำหรับงานหรือโปรเจกต์ใหญ่
+                        แจ้งเตือนล่วงหน้า 2 วันก่อนกำหนดส่ง เพื่อเตรียมตัวทำงานล่วงหน้า
                       </span>
                     </div>
                     <input
@@ -319,6 +319,19 @@ export default function SettingsPage() {
                     />
                   </label>
                 </div>
+              </div>
+
+              {/* ข้อแนะนำการเปิดใช้งาน Web Push บน Vercel / มือถือ */}
+              <div className="p-3.5 bg-neutral-50 rounded-lg border border-neutral-200 text-xs text-neutral-700 space-y-1.5">
+                <p className="font-medium text-neutral-900 flex items-center gap-1.5">
+                  <span>💡</span>
+                  <span>รอบเวลาการแจ้งเตือนอัตโนมัติ (Server Cron):</span>
+                </p>
+                <ul className="list-disc list-inside space-y-0.5 text-[11px] text-muted ml-1">
+                  <li><strong>ล่วงหน้า 2 วัน:</strong> แจ้งเตือนเมื่อเหลือเวลา 48 ชม. ก่อนกำหนดส่ง</li>
+                  <li><strong>วันกำหนดส่ง:</strong> แจ้งเตือน 3 รอบต่อวัน เวลา <strong>08:00 น.</strong>, <strong>11:00 น.</strong> และ <strong>17:00 น.</strong></li>
+                  <li><strong>งานเกินกำหนด:</strong> แจ้งเตือนทันทีเมื่องานเลยกำหนดส่ง</li>
+                </ul>
               </div>
             </div>
           )}
