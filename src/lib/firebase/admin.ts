@@ -10,6 +10,8 @@ function getFirebaseAdminApp() {
   let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
   if (privateKey) {
+    // Strip surrounding quotes if accidentally included
+    privateKey = privateKey.trim().replace(/^["']|["']$/g, '');
     // Handle escaped newlines in environment variable
     privateKey = privateKey.replace(/\\n/g, '\n');
   }
