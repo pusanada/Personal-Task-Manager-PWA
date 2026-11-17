@@ -8,7 +8,7 @@ import { DeleteConfirmModal } from '@/components/tasks/DeleteConfirmModal';
 import { useTasks } from '@/hooks/useTasks';
 import { Task, TaskStatus } from '@/types/task';
 import { isTaskOverdue } from '@/lib/dates/timezone';
-import { CheckSquare, AlertCircle, Sparkles } from 'lucide-react';
+import { AlertCircle, Sparkles } from 'lucide-react';
 
 function TasksContent() {
   const { openAddTask, openEditTask } = useTaskModal();
