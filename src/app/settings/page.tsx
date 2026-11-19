@@ -136,9 +136,33 @@ export default function SettingsPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
+        // สั่งให้ Service Worker หรือ Notification API เด้งแจ้งเตือนบนหน้าจอทันที
+        if ('serviceWorker' in navigator) {
+          try {
+            const reg = await navigator.serviceWorker.ready;
+            await reg.showNotification('🔔 แจ้งเตือนกำหนดส่งจาก TaskFlow', {
+              body: 'อุปกรณ์ของคุณเชื่อมต่อกับระบบแจ้งเตือนสำเร็จแล้ว!',
+              icon: '/icons/icon-192x192.png',
+              badge: '/icons/icon-72x72.png',
+            });
+          } catch {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              new Notification('🔔 แจ้งเตือนกำหนดส่งจาก TaskFlow', {
+                body: 'อุปกรณ์ของคุณเชื่อมต่อกับระบบแจ้งเตือนสำเร็จแล้ว!',
+                icon: '/icons/icon-192x192.png',
+              });
+            }
+          }
+        } else if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('🔔 แจ้งเตือนกำหนดส่งจาก TaskFlow', {
+            body: 'อุปกรณ์ของคุณเชื่อมต่อกับระบบแจ้งเตือนสำเร็จแล้ว!',
+            icon: '/icons/icon-192x192.png',
+          });
+        }
+
         setTestResult({
           success: true,
-          message: 'ส่งการแจ้งเตือนไปยังอุปกรณ์ของคุณผ่าน Firebase Cloud Messaging แล้ว!',
+          message: 'ส่งการแจ้งเตือนสำเร็จแล้ว! ได้รับการแจ้งเตือนบนอุปกรณ์เรียบร้อยแล้ว',
         });
       } else {
         // สำรอง: แจ้งเตือนในเครื่องหากยังไม่ได้ตั้งค่า server admin

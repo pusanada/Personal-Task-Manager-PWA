@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { MobileTopNav } from './MobileTopNav';
 import { MobileBottomNav } from './MobileBottomNav';
@@ -8,6 +8,7 @@ import { OfflineBanner } from './OfflineBanner';
 import { TaskModal } from '@/components/tasks/TaskModal';
 import { useTasks } from '@/hooks/useTasks';
 import { Task, CreateTaskInput } from '@/types/task';
+import { subscribeToForegroundMessages } from '@/lib/firebase/client';
 
 interface TaskModalContextType {
   openAddTask: () => void;
@@ -29,6 +30,31 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const { addTask, updateTask } = useTasks();
+
+  useEffect(() => {
+    // รับการแจ้งเตือน Push เมื่อเปิดหน้าเว็บอยู่
+    const unsubscribe = subscribeToForegroundMessages(({ title, body }) => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((reg) => {
+          reg.showNotification(title, {
+            body,
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+          });
+        }).catch(() => {
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(title, { body, icon: '/icons/icon-192x192.png' });
+          }
+        });
+      } else if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body, icon: '/icons/icon-192x192.png' });
+      }
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
 
   const handleOpenAddTask = () => {
     setEditingTask(null);

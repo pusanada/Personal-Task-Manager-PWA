@@ -16,8 +16,24 @@ import {
 } from '@/lib/dates/timezone';
 
 export async function fetchAllTasks(): Promise<Task[]> {
-  const supabase = getSupabaseClient();
+  // 1. ลองดึงผ่าน API ฝั่งเซิร์ฟเวอร์ก่อน เพื่อให้ทั้งคอมและมือถือใช้ฐานข้อมูลเดียวกันเสมอ
+  if (typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      const res = await fetch('/api/tasks');
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.data)) {
+          saveLocalTasks(json.data);
+          return sortTasksChronologically(json.data);
+        }
+      }
+    } catch {
+      // API call failed, try direct Supabase client
+    }
+  }
 
+  // 2. ลองผ่าน Supabase Client โดยตรง
+  const supabase = getSupabaseClient();
   if (supabase && typeof navigator !== 'undefined' && navigator.onLine) {
     try {
       const { data, error } = await supabase
@@ -26,7 +42,6 @@ export async function fetchAllTasks(): Promise<Task[]> {
         .order('created_at', { ascending: false });
 
       if (!error && data) {
-        // Cache to local storage
         saveLocalTasks(data as Task[]);
         return sortTasksChronologically(data as Task[]);
       }
@@ -35,14 +50,35 @@ export async function fetchAllTasks(): Promise<Task[]> {
     }
   }
 
-  // Fallback to local
+  // 3. Fallback to local storage (ออฟไลน์)
   const local = getLocalTasks();
   return sortTasksChronologically(local);
 }
 
 export async function createTask(input: TaskCreateInput): Promise<Task> {
-  const supabase = getSupabaseClient();
+  // 1. ลองบันทึกผ่าน API เซิร์ฟเวอร์ก่อน
+  if (typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && json.data.id) {
+          const current = getLocalTasks();
+          saveLocalTasks([json.data as Task, ...current.filter((t) => t.id !== json.data.id)]);
+          return json.data as Task;
+        }
+      }
+    } catch {
+      // API failed, try client SDK
+    }
+  }
 
+  // 2. ลองบันทึกผ่าน Supabase Client
+  const supabase = getSupabaseClient();
   if (supabase && typeof navigator !== 'undefined' && navigator.onLine) {
     try {
       const { data, error } = await supabase
@@ -62,7 +98,6 @@ export async function createTask(input: TaskCreateInput): Promise<Task> {
         .single();
 
       if (!error && data) {
-        // Also update local storage
         const current = getLocalTasks();
         saveLocalTasks([data as Task, ...current.filter((t) => t.id !== data.id)]);
         return data as Task;
@@ -72,12 +107,38 @@ export async function createTask(input: TaskCreateInput): Promise<Task> {
     }
   }
 
+  // 3. Fallback to local storage
   return createLocalTask(input);
 }
 
 export async function updateTask(id: string, updates: TaskUpdateInput): Promise<Task | null> {
-  const supabase = getSupabaseClient();
+  // 1. ลองอัปเดตผ่าน API เซิร์ฟเวอร์
+  if (typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          const current = getLocalTasks();
+          const idx = current.findIndex((t) => t.id === id);
+          if (idx !== -1) {
+            current[idx] = json.data as Task;
+            saveLocalTasks(current);
+          }
+          return json.data as Task;
+        }
+      }
+    } catch {
+      // API failed, fallback
+    }
+  }
 
+  // 2. ลองผ่าน Supabase Client
+  const supabase = getSupabaseClient();
   if (supabase && typeof navigator !== 'undefined' && navigator.onLine) {
     try {
       const { data, error } = await supabase
@@ -113,8 +174,21 @@ export async function toggleTaskCompletion(id: string, currentStatus: string): P
 }
 
 export async function deleteTask(id: string): Promise<boolean> {
-  const supabase = getSupabaseClient();
+  // 1. ลองลบผ่าน API เซิร์ฟเวอร์
+  if (typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        deleteLocalTask(id);
+        return true;
+      }
+    } catch {
+      // API failed, fallback
+    }
+  }
 
+  // 2. ลองผ่าน Supabase Client
+  const supabase = getSupabaseClient();
   if (supabase && typeof navigator !== 'undefined' && navigator.onLine) {
     try {
       const { error } = await supabase.from('tasks').delete().eq('id', id);
@@ -131,6 +205,29 @@ export async function deleteTask(id: string): Promise<boolean> {
 }
 
 export async function bulkImportTasks(inputs: TaskCreateInput[]): Promise<Task[]> {
+  // 1. ลองนำเข้าผ่าน API เซิร์ฟเวอร์
+  if (typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      const res = await fetch('/api/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tasks: inputs }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.data)) {
+          const current = getLocalTasks();
+          const combined = [...(json.data as Task[]), ...current];
+          saveLocalTasks(combined);
+          return json.data as Task[];
+        }
+      }
+    } catch {
+      // API failed, fallback
+    }
+  }
+
+  // 2. ลองผ่าน Supabase Client
   const supabase = getSupabaseClient();
 
   if (supabase && typeof navigator !== 'undefined' && navigator.onLine) {
